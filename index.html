@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Examen de práctica: Análisis y Diseño de Sistemas Informáticos</title>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f6f7f2;--card:#fff;--ink:#1b2a41;--mut:#5d6b7e;--line:#d5dbe3;--acc:#2f5bea;--on:#fff;--ok:#1e8e5a;--bad:#c8362f;--okbg:#e3f4ea;--badbg:#fbe6e4;--grid:rgba(47,91,234,.07);box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#10161f;--card:#18212d;--ink:#e8edf5;--mut:#9aa8bb;--line:#2c3a4d;--acc:#7a9bff;--on:#10161f;--ok:#4cc38a;--bad:#ff7a72;--okbg:#143225;--badbg:#3a1c1a;--grid:rgba(122,155,255,.06)}}
+:root[data-theme="dark"]{--bg:#10161f;--card:#18212d;--ink:#e8edf5;--mut:#9aa8bb;--line:#2c3a4d;--acc:#7a9bff;--on:#10161f;--ok:#4cc38a;--bad:#ff7a72;--okbg:#143225;--badbg:#3a1c1a;--grid:rgba(122,155,255,.06)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg) linear-gradient(var(--grid) 1px,transparent 1px) 0 0/100% 28px;color:var(--ink);font:16px/1.5 "Bricolage Grotesque",system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:660px;margin:0 auto;padding:20px 16px 48px}
+h1{font-size:2rem;line-height:1.1;font-weight:800;margin:.2em 0 .4em}h2{font-size:1.3rem;line-height:1.3;font-weight:600;margin:.3em 0 1em}h3{margin:1.4em 0 .4em}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.meta{color:var(--mut);font-size:.9rem;margin:.6em 0 0}
+button{font:inherit;cursor:pointer;border:1.5px solid var(--line);background:var(--card);color:var(--ink);border-radius:10px;padding:12px 16px;text-align:left}
+button:hover:not(:disabled){border-color:var(--acc)}button:focus-visible,.chip:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+button:disabled{opacity:.45;cursor:not-allowed}
+.go{background:var(--acc);color:var(--on);border-color:var(--acc);font-weight:600;text-align:center;margin-top:14px}
+.opts{display:grid;gap:10px}.vf{grid-template-columns:1fr 1fr}.vf button{text-align:center;font-weight:600}
+.opts .ok,.chip.ok{background:var(--okbg);border-color:var(--ok)}.opts .bad,.chip.bad{background:var(--badbg);border-color:var(--bad)}
+.fb{margin-top:14px;padding:12px 14px;border-radius:10px;font-weight:600}.fb.ok{background:var(--okbg);color:var(--ok)}.fb.bad{background:var(--badbg);color:var(--bad)}
+.pool,.slot{min-height:52px;border:1.5px dashed var(--line);border-radius:10px;padding:8px;display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.slots{display:grid;gap:10px;margin-top:12px}.slot b{flex:0 0 100%;font-size:.85rem;color:var(--mut)}
+.chip{border:1.5px solid var(--acc);background:var(--card);border-radius:8px;padding:6px 12px;cursor:grab;user-select:none;touch-action:manipulation}.chip.on{background:var(--acc);color:var(--on)}
+.mut{color:var(--mut)}
+.score{font-size:4.5rem;font-weight:800;line-height:1}
+.row{display:grid;grid-template-columns:1fr 54px;gap:4px 10px;margin:10px 0}.row .bar{grid-column:1/-1;height:8px}
+.good{color:var(--ok)}.warn{color:var(--bad)}
+details{border-top:1px solid var(--line);padding:8px 0}summary{cursor:pointer;font-weight:600}
+</style></head><body><main id="app"></main>
+<script>
+const T={H:["Lenguajes de máquina, ensamblador y alto nivel","Puntos 1, 2, 3, 14 y 26: ENIAC (1946), EDSAC (1949), FORTRAN (1957), COBOL (1959), FORTRAN IV (1962), y ventajas y desventajas de cada nivel."],
+P:["Programa fuente, ejecutable y su orden","Puntos 4, 11, 12 y 13: fuente contra ejecutable, transcripción, compilación y el orden completo del proceso."],
+A:["Algoritmos, lenguaje natural y ASCII","Puntos 5 al 9: pasos finitos y definidos, entrada, proceso y salida, pseudocódigo y diagramas de flujo."],
+D:["Tipos de datos, constantes y variables","Puntos 10 y 22: entero, real, cadena, carácter y lógico; constante contra variable."],
+O:["Operadores aritméticos y expresiones","Puntos 15, 21 y 23: MOD, DIV, operador contra operando y la prioridad de las operaciones."],
+R:["Operadores relacionales","Punto 16: los seis símbolos, que siempre dan verdadero o falso, y que = sirve para comparar."],
+L:["Operadores lógicos y asignación","Puntos 17, 24 y 25: AND, OR, NOT, su prioridad (NOT, AND, OR) y la flecha ← de asignación."],
+S:["Sistema operativo y sistema de cómputo","Puntos 18 y 20: funciones y ejemplos del SO, y hardware + software + usuario."],
+M:["Metodología de resolución de problemas","Punto 19: las 8 fases en orden, los 3 tipos de error y el truco para memorizarlas."]};
+const Q=[
+["v","H","El lenguaje de máquina se escribe en binario (0 y 1).",true],
+["v","H","ENIAC se programaba con cables e interruptores.",true],
+["v","H","El lenguaje ensamblador no necesita ningún traductor para ejecutarse.",false],
+["v","H","Un lenguaje de alto nivel depende del hardware de la máquina.",false],
+["v","A","El lenguaje natural es ambiguo, por eso la computadora no lo entiende.",true],
+["v","A","Un algoritmo puede repetirse eternamente sin terminar.",false],
+["v","P","El programa fuente es el que la computadora corre directamente.",false],
+["v","P","La transcripción consiste en teclear el programa codificado en la computadora.",true],
+["v","O","En 5 DIV 2 el resultado es 2.",true],
+["v","O","El operador MOD devuelve el cociente de la división.",false],
+["v","O","Una expresión aritmética siempre da como resultado verdadero o falso.",false],
+["v","R","El símbolo = usado en una comparación significa “igual a”.",true],
+["v","L","El operador NOT invierte el valor lógico.",true],
+["v","L","En una asignación, el valor de la izquierda se guarda en la variable de la derecha.",false],
+["v","S","El sistema operativo es un programa de aplicación, igual que Word.",false],
+["v","M","Un error lógico hace que el programa corra pero dé un resultado incorrecto.",true],
+["m","H","¿Cuál es el único lenguaje que la computadora entiende directamente?",["Ensamblador","Máquina","Alto nivel","Natural"],1],
+["m","H","¿En qué año apareció ENIAC?",["1946","1949","1957","1959"],0],
+["m","H","¿En qué año apareció FORTRAN IV?",["1957","1959","1962","1946"],2],
+["m","H","¿Cuál es un ejemplo de ensamblador?",["NASM","Python","Java","COBOL"],0],
+["m","H","¿Cuál es una desventaja de los lenguajes de alto nivel?",["Son difíciles de aprender","Se ejecutan más lento","Dependen del hardware","Producen más errores"],1],
+["m","P","¿Qué programa traduce todo el programa fuente a programa ejecutable?",["El compilador","El transcriptor","El código ASCII","El usuario"],0],
+["m","P","¿Qué es un programa fuente?",["El escrito en lenguaje de programación","El ya traducido a máquina","Un manual de usuario","Un dispositivo de entrada"],0],
+["m","A","¿Cuáles son las partes de un algoritmo?",["Entrada, proceso y salida","Hardware, software y usuario","Fuente, compilación y ejecución","Inicio, nudo y fin"],0],
+["m","A","¿Cuáles son dos formas de representar algoritmos antes de programar?",["Pseudocódigo y diagramas de flujo","ASCII y binario","Compilador e intérprete","Variables y constantes"],0],
+["m","D","¿Qué tipo de dato es 3.14?",["Entero","Real","Cadena","Lógico"],1],
+["m","D","¿Qué es una variable?",["Un valor que nunca cambia","Un espacio de memoria con nombre cuyo valor puede cambiar","Un tipo de operador","Un tipo de error"],1],
+["m","O","¿Cuánto es 5 MOD 2?",["1","2","2.5","0"],0],
+["m","O","¿Cuál es el resultado de 2 + 3 * 4?",["20","14","24","10"],1],
+["m","R","¿Qué operador relacional significa “diferente de”?",["<>","<=",">=","=="],0],
+["m","L","El operador AND da verdadero cuando…",["al menos una condición es verdadera","ambas condiciones son verdaderas","ambas son falsas","ninguna es verdadera"],1],
+["m","L","¿Cuál es la prioridad entre los operadores lógicos, de mayor a menor?",["OR, AND, NOT","NOT, AND, OR","AND, NOT, OR","NOT, OR, AND"],1],
+["m","L","Si total ← 5 + 2, ¿cuánto vale total?",["7","5","2","10"],0],
+["m","S","¿Cuál es un sistema operativo de celulares?",["Android","Word","Pascal","ASCII"],0],
+["m","M","¿Cuál es la primera fase de la metodología para resolver problemas?",["Análisis de los datos","Definición del problema","Diseño de la solución","Codificación"],1],
+["m","M","Un error de sintaxis es…",["un programa que corre con resultado incorrecto","algo mal escrito en el programa","un programa que se cae al correr","la falta de documentación"],1],
+["m","M","En la fase de mantenimiento se…",["entiende el problema","corrige y actualiza el programa en uso","escribe el pseudocódigo","compila el programa"],1],
+["m","S","El sistema de cómputo está formado por…",["hardware, software y usuario","entrada, proceso y salida","memoria, disco y procesador","fuente, compilador y ejecutable"],0],
+["d","P","Ordena el proceso desde el lenguaje natural hasta el programa ejecutable.",["1º","2º","3º","4º","5º","6º","7º"],[["Lenguaje natural",0],["Codificación",1],["Lenguaje de programación",2],["Transcripción",3],["Programa fuente",4],["Compilación",5],["Programa ejecutable",6]]],
+["d","H","Clasifica cada lenguaje según su nivel.",["Bajo nivel","Alto nivel"],[["Lenguaje de máquina",0],["Ensamblador",0],["Python",1],["Pascal",1],["COBOL",1]]],
+["d","M","Ordena las 8 fases de la metodología para resolver problemas.",["1ª","2ª","3ª","4ª","5ª","6ª","7ª","8ª"],[["Definición del problema",0],["Análisis de los datos",1],["Diseño de la solución",2],["Codificación",3],["Compilación y ejecución",4],["Prueba y depuración",5],["Documentación",6],["Mantenimiento",7]]],
+["d","O","Clasifica cada operador según su tipo.",["Aritmético","Relacional","Lógico"],[["+",0],["MOD",0],[">=",1],["<>",1],["AND",2],["NOT",2]]],
+["d","D","Clasifica cada valor según su tipo de dato.",["Entero","Real","Cadena","Lógico"],[["100",0],["-3",0],["3.14",1],["-0.5",1],["“Hola”",2],["verdadero",3]]],
+["d","O","Ordena las operaciones aritméticas de mayor a menor prioridad.",["1º","2º","3º","4º"],[["Paréntesis ( )",0],["Potencia ^",1],["* / DIV MOD",2],["+ -",3]]],
+["d","L","Ordena los operadores lógicos de mayor a menor prioridad.",["1º","2º","3º"],[["NOT",0],["AND",1],["OR",2]]],
+["d","O","Clasifica cada expresión según el tipo de resultado que da.",["Número","Verdadero o falso"],[["2 + 3 * 4",0],["5 DIV 2",0],["5 MOD 2",0],["5 > 2",1],["(edad >= 18) AND (tiene_cedula)",1]]],
+["d","S","Clasifica cada programa.",["Sistema operativo","Programa de aplicación"],[["Windows",0],["Linux",0],["Android",0],["Word",1],["Juegos",1]]]];
+const sh=a=>{a=[...a];for(let i=a.length-1;i>0;i--){const j=Math.random()*(i+1)|0;[a[i],a[j]]=[a[j],a[i]]}return a};
+const e=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+const $=s=>document.querySelector(s),app=$("#app");
+let qs,i,log,done,placed,sel,ord;
+function intro(){const c=t=>Q.filter(q=>q[0]==t).length;
+app.innerHTML=`<h1>Examen de práctica</h1><p class=mut>Análisis y Diseño de Sistemas Informáticos</p><div class=card><p><b>${Q.length} preguntas</b> sobre todo el repaso exprés: ${c("v")} de verdadero o falso, ${c("m")} de selección múltiple y ${c("d")} de arrastrar.</p><p>En las de arrastrar, mueve cada ficha a su lugar. En el celular, toca la ficha y luego toca el lugar.</p><p>Al final verás tu porcentaje, lo que dominas, lo que fallaste y un plan de estudio.</p><button class=go id=st style="width:100%">Empezar el examen</button></div>`;
+$("#st").onclick=()=>{qs=sh(Q);i=0;log=[];show()}}
+function show(){if(i>=qs.length)return result();
+const q=qs[i];done=false;sel=null;
+app.innerHTML=`<div class=bar><i style="width:${i/qs.length*100}%"></i></div><p class=meta>Pregunta ${i+1} de ${qs.length}<br>${T[q[1]][0]}</p><div class=card><h2>${e(q[2])}</h2><div id=a></div><div id=f></div></div>`;
+if(q[0]=="v"){$("#a").innerHTML=`<div class="opts vf"><button data-k=1>Verdadero</button><button data-k=0>Falso</button></div>`;
+document.querySelectorAll("#a button").forEach(b=>b.onclick=()=>{if(done)return;const k=b.dataset.k==1;
+document.querySelectorAll("#a button").forEach(x=>{if((x.dataset.k==1)==q[3])x.classList.add("ok")});if(k!=q[3])b.classList.add("bad");
+fin(k==q[3],q[3]?"Verdadero":"Falso")})}
+else if(q[0]=="m"){const o=sh(q[3].map((t,k)=>[t,k]));
+$("#a").innerHTML=`<div class=opts>${o.map(([t,k])=>`<button data-k=${k}>${e(t)}</button>`).join("")}</div>`;
+document.querySelectorAll("#a button").forEach(b=>b.onclick=()=>{if(done)return;const k=+b.dataset.k;
+document.querySelectorAll("#a button").forEach(x=>{if(+x.dataset.k==q[4])x.classList.add("ok")});if(k!=q[4])b.classList.add("bad");
+fin(k==q[4],q[3][q[4]])})}
+else{placed=q[4].map(()=>-1);ord=sh(q[4].map((_,k)=>k));dr(q)}}
+function fin(ok,ans){done=true;const q=qs[i];log.push({t:q[2],tp:q[1],ok,ans});
+$("#f").innerHTML=`<div class="fb ${ok?"ok":"bad"}">${ok?"Correcto":"Incorrecto. Respuesta: "+e(ans)}</div><button class=go id=nx style="width:100%">${i+1<qs.length?"Siguiente":"Ver resultados"}</button>`;
+$("#nx").onclick=()=>{i++;show()};$("#nx").focus()}
+function dr(q){const S=q[3],C=q[4],single=S.length==C.length;
+const chip=m=>`<span class="chip${sel==m?" on":""}${done?(placed[m]==C[m][1]?" ok":" bad"):""}" draggable=${!done} tabindex=0 data-m=${m}>${e(C[m][0])}</span>`;
+const pool=ord.filter(m=>placed[m]<0);
+$("#a").innerHTML=`<div class=pool data-s=-1>${pool.map(chip).join("")||"<span class=mut>Todas las fichas están colocadas</span>"}</div><div class=slots>${S.map((s,k)=>`<div class=slot data-s=${k}><b>${e(s)}</b>${ord.filter(m=>placed[m]==k).map(chip).join("")}</div>`).join("")}</div>${done?"":`<button class=go id=ck style="width:100%" ${pool.length?"disabled":""}>Comprobar</button>`}`;
+const put=(m,s)=>{if(done)return;if(single&&s>=0)C.forEach((_,x)=>{if(placed[x]==s&&x!=m)placed[x]=-1});placed[m]=s;sel=null;dr(q)};
+document.querySelectorAll("#a .chip").forEach(c=>{const m=+c.dataset.m;
+c.ondragstart=ev=>ev.dataTransfer.setData("text",m);
+c.onclick=ev=>{ev.stopPropagation();if(done)return;if(placed[m]>=0){placed[m]=-1;sel=null}else sel=sel==m?null:m;dr(q)};
+c.onkeydown=ev=>{if(ev.key=="Enter"||ev.key==" "){ev.preventDefault();c.click()}}});
+document.querySelectorAll("#a [data-s]").forEach(z=>{const s=+z.dataset.s;
+z.ondragover=ev=>ev.preventDefault();
+z.ondrop=ev=>{ev.preventDefault();const m=ev.dataTransfer.getData("text");if(m!=="")put(+m,s)};
+z.onclick=()=>{if(sel!=null)put(sel,s)}});
+if(!done)$("#ck").onclick=()=>{const ok=C.every((c,m)=>placed[m]==c[1]);done=true;
+const ans=S.map((s,k)=>s+": "+C.filter(c=>c[1]==k).map(c=>c[0]).join(", ")).join(" | ");dr(q);fin(ok,ans)}}
+function result(){const n=log.length,ok=log.filter(l=>l.ok).length,pc=Math.round(ok/n*100);
+const st={};log.forEach(l=>{const s=st[l.tp]||(st[l.tp]={a:0,n:0});s.n++;if(l.ok)s.a++});
+const rows=Object.entries(st).map(([k,v])=>({k,...v,p:v.a/v.n})).sort((a,b)=>a.p-b.p);
+const good=rows.filter(r=>r.p>=.8),weak=rows.filter(r=>r.p<.8).reverse().reverse();
+const msg=pc>=90?"Excelente, estás listo para el examen.":pc>=75?"Muy bien, solo te faltan unos detalles.":pc>=60?"Aprobado por poco. Hay que repasar.":"Todavía no. Con el plan de abajo puedes subirlo.";
+const pr=p=>p<.5?"Urgente":p<.7?"Importante":"Repaso rápido";
+app.innerHTML=`<h1>Resultado</h1><div class=card><div class=score>${pc}%</div><p><b>${ok} de ${n} correctas.</b> ${msg}</p></div>
+<h3>Por tema</h3><div class=card>${rows.map(r=>`<div class=row><span>${T[r.k][0]}</span><b class="${r.p>=.8?"good":"warn"}">${r.a}/${r.n}</b><div class=bar><i style="width:${r.p*100}%;background:var(${r.p>=.8?"--ok":"--bad"})"></i></div></div>`).join("")}</div>
+<h3 class=good>Lo bueno</h3><div class=card>${good.length?"<ul>"+good.map(r=>`<li>${T[r.k][0]} (${Math.round(r.p*100)}%)</li>`).join("")+"</ul>":"<p class=mut>Ningún tema llegó al 80% todavía. Sigue el plan y vuelve a intentarlo.</p>"}</div>
+<h3 class=warn>Lo malo</h3><div class=card>${weak.length?"<ul>"+weak.map(r=>`<li>${T[r.k][0]} (${Math.round(r.p*100)}%)</li>`).join("")+"</ul>":"<p>No tienes temas débiles. Todo está sobre el 80%.</p>"}</div>
+<h3>Plan de estudio</h3><div class=card>${weak.length?"<ol>"+weak.map(r=>`<li><b>${pr(r.p)}: ${T[r.k][0]}</b><br><span class=mut>${T[r.k][1]}</span><br>${log.filter(l=>l.tp==r.k&&!l.ok).length?`<details><summary>Lo que fallaste aquí</summary>${log.filter(l=>l.tp==r.k&&!l.ok).map(l=>`<p>${e(l.t)}<br><b class=good>${e(l.ans)}</b></p>`).join("")}</details>`:""}</li>`).join("")+"<li><b>Repite el examen</b> cuando termines. Las preguntas salen en otro orden.</li></ol>":"<p>Repite el examen un día antes para no perder el ritmo. Si quieres, repasa el punto 19 y las prioridades de los operadores.</p>"}</div>
+<button class=go id=rt style="width:100%">Hacer el examen otra vez</button>`;
+$("#rt").onclick=()=>{qs=sh(Q);i=0;log=[];show();scrollTo(0,0)};scrollTo(0,0)}
+intro();
+</script></body></html>
